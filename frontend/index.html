@@ -4,44 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Interview Coach</title>
-    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
 
     <div class="container">
+
         <h1>Smart Interview Coach</h1>
         <p class="subtitle">Practice your interview skills</p>
 
         <div class="card">
 
-            <h2>Interview Question</h2>
-
-            <p id="question">
-                Loading question...
-            </p>
+            <h2 id="question">Loading question...</h2>
 
             <textarea
                 id="answer"
                 placeholder="Type your answer here..."
             ></textarea>
 
-            <button onclick="submitAnswer()">
-                Submit Answer
-            </button>
+            <button onclick="submitAnswer()">Submit Answer</button>
+            <button onclick="nextQuestion()">Next Question</button>
 
             <div id="result"></div>
 
-          <button class="next-btn" onclick="nextQuestion()">
-    Next Question
-</button> 
-</button>
-            </button>
-
         </div>
+
     </div>
 
-    <script src="script.js"></script>
+    <script src="/static/script.js"></script>
 
 </body>
 </html>

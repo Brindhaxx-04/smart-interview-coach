@@ -12,6 +12,7 @@ async function loadQuestion() {
         }
 
         const data = await response.json();
+
         questions = data.questions || [];
 
         if (questions.length === 0) {
@@ -20,27 +21,23 @@ async function loadQuestion() {
             return;
         }
 
-        currentQuestionIndex = 0;
-        showQuestion();
+        document.getElementById("question").textContent =
+            questions[currentQuestionIndex];
+
+        document.getElementById("answer").value = "";
+        document.getElementById("result").innerHTML = "";
 
     } catch (error) {
-        console.error(error);
+        console.error("Question loading error:", error);
 
         document.getElementById("question").textContent =
             "Unable to load question.";
     }
 }
 
-function showQuestion() {
-    document.getElementById("question").textContent =
-        questions[currentQuestionIndex];
-
-    document.getElementById("answer").value = "";
-    document.getElementById("result").innerHTML = "";
-}
-
 function nextQuestion() {
     if (questions.length === 0) {
+        loadQuestion();
         return;
     }
 
@@ -50,7 +47,11 @@ function nextQuestion() {
         currentQuestionIndex = 0;
     }
 
-    showQuestion();
+    document.getElementById("question").textContent =
+        questions[currentQuestionIndex];
+
+    document.getElementById("answer").value = "";
+    document.getElementById("result").innerHTML = "";
 }
 
 async function submitAnswer() {
@@ -58,17 +59,17 @@ async function submitAnswer() {
         document.getElementById("question").textContent;
 
     const answer =
-        document.getElementById("answer").value.trim();
+        document.getElementById("answer").value;
 
     const result =
         document.getElementById("result");
 
-    if (!answer) {
+    if (!answer.trim()) {
         result.textContent = "Please enter your answer.";
         return;
     }
 
-    result.innerHTML = "Evaluating your answer...";
+    result.textContent = "Evaluating your answer...";
 
     try {
         const response = await fetch(`${API_URL}/evaluate`, {
@@ -90,31 +91,13 @@ async function submitAnswer() {
 
         result.innerHTML = `
             <div class="feedback-card">
-                <h3>Interview Feedback</h3>
-
-                <div class="score">
-                    Score: ${data.score}/10
-                </div>
-
-                <p>
-                    <strong>Strengths:</strong><br>
-                    ${data.strengths}
-                </p>
-
-                <p>
-                    <strong>Suggestions:</strong><br>
-                    ${data.suggestions}
-                </p>
-
-                <p>
-                    <strong>Overall Feedback:</strong><br>
-                    ${data.feedback}
-                </p>
+                <div class="score">Score: ${data.score}/10</div>
+                <p><strong>Feedback:</strong> ${data.feedback}</p>
             </div>
         `;
 
     } catch (error) {
-        console.error(error);
+        console.error("Answer evaluation error:", error);
 
         result.textContent =
             "Unable to connect to backend.";
