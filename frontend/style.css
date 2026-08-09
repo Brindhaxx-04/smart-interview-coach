@@ -1,3 +1,4 @@
+```css
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,67 +7,130 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: #f4f6f8;
+    background: #f4f7fb;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 30px;
 }
 
 .container {
-    width: 90%;
-    max-width: 700px;
-    text-align: center;
+    width: 100%;
+    max-width: 800px;
 }
 
 h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
+    text-align: center;
+    font-size: 40px;
+    color: #1f2937;
+    margin-bottom: 8px;
 }
 
 .subtitle {
-    color: #666;
+    text-align: center;
+    color: #6b7280;
     margin-bottom: 30px;
+    font-size: 17px;
 }
 
 .card {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 #question {
-    margin-bottom: 20px;
-    font-size: 20px;
+    font-size: 24px;
+    color: #111827;
+    margin-bottom: 22px;
+    line-height: 1.4;
 }
 
 textarea {
     width: 100%;
-    height: 150px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    min-height: 170px;
+    padding: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
     resize: vertical;
     font-size: 16px;
+    font-family: Arial, sans-serif;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
 }
 
 button {
-    margin-top: 20px;
-    padding: 12px 25px;
+    margin-top: 18px;
+    padding: 13px 22px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
-    background: #222;
+    font-weight: bold;
+    margin-right: 10px;
+    background: #4f46e5;
     color: white;
 }
 
-.next-btn {
-    margin-left: 10px;
+button:hover {
+    opacity: 0.9;
 }
 
 #result {
-    margin-top: 20px;
-    font-size: 18px;
+    margin-top: 25px;
 }
+
+.feedback-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 22px;
+    line-height: 1.6;
+}
+
+.feedback-card h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #1f2937;
+}
+
+.score {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.feedback-card p {
+    margin-top: 14px;
+    color: #374151;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 15px;
+    }
+
+    .card {
+        padding: 22px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    #question {
+        font-size: 20px;
+    }
+
+    button {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+```
