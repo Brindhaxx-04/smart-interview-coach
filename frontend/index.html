@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Interview Coach</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Smart Interview Coach</h1>
+        <p class="subtitle">Practice your interview skills</p>
+
+        <div class="card">
+            <h2 id="question">Loading question...</h2>
+
+            <textarea
+                id="answer"
+                placeholder="Type your answer here..."
+            ></textarea>
+
+            <button onclick="submitAnswer()">
+                Submit Answer
+            </button>
+
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
