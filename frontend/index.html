@@ -1,157 +1,413 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Smart Interview Coach</title>
-    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #question {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin-top: 15px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        #submitBtn {
+            background: #2563eb;
+            color: white;
+        }
+
+        #nextBtn {
+            background: #16a34a;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        .feedback-card {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .score {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .completed {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .completed h2 {
+            font-size: 28px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <h1>Smart Interview Coach</h1>
-        <p class="subtitle">Practice your interview skills</p>
+    <h1>Smart Interview Coach</h1>
 
-        <div class="card">
+    <p class="subtitle">
+        Practice your interview skills
+    </p>
 
-            <h2 id="question">Loading question...</h2>
+    <div class="card">
 
-            <textarea
-                id="answer"
-                placeholder="Type your answer here..."
-            ></textarea>
+        <h2 id="question">
+            Loading question...
+        </h2>
 
-            <button id="submitBtn" onclick="submitAnswer()">
-                Submit Answer
-            </button>
+        <textarea
+            id="answer"
+            placeholder="Type your answer here..."
+        ></textarea>
 
-            <button id="nextBtn" onclick="nextQuestion()">
-                Next Question
-            </button>
+        <button
+            id="submitBtn"
+            onclick="submitAnswer()">
+            Submit Answer
+        </button>
 
-            <div id="result"></div>
+        <button
+            id="nextBtn"
+            onclick="nextQuestion()">
+            Next Question
+        </button>
 
-        </div>
+        <div id="result"></div>
 
     </div>
 
-    <script>
-        let questions = [];
-        let currentQuestionIndex = 0;
+</div>
 
-        async function loadQuestion() {
-            try {
-                const response = await fetch("/questions");
-                const data = await response.json();
 
-                questions = data.questions;
+<script>
 
-                showQuestion();
+    // ==============================
+    // VARIABLES
+    // ==============================
 
-            } catch (error) {
-                console.error(error);
+    let questions = [];
 
-                document.getElementById("question").textContent =
-                    "Unable to load question.";
-            }
-        }
+    let currentQuestionIndex = 0;
 
-        function showQuestion() {
-            document.getElementById("question").textContent =
-                questions[currentQuestionIndex];
 
-            document.getElementById("answer").value = "";
-            document.getElementById("result").innerHTML = "";
-        }
+    // ==============================
+    // LOAD QUESTIONS
+    // ==============================
 
-        async function submitAnswer() {
-            const answer =
-                document.getElementById("answer").value;
+    async function loadQuestion() {
 
-            const result =
-                document.getElementById("result");
+        try {
 
-            if (!answer.trim()) {
-                result.textContent = "Please enter your answer.";
-                return;
-            }
+            const response = await fetch("/questions");
 
-            result.textContent = "Evaluating your answer...";
+            const data = await response.json();
 
-            try {
-                const response = await fetch("/evaluate", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        answer: answer
-                    })
-                });
+            questions = data.questions;
 
-                const data = await response.json();
+            console.log("Questions:", questions);
+            console.log("Total questions:", questions.length);
 
-                result.innerHTML = `
-                    <div class="feedback-card">
-                        <div class="score">
-                            Score: ${data.score}/10
-                        </div>
-                        <p>
-                            <strong>Feedback:</strong>
-                            ${data.feedback}
-                        </p>
-                    </div>
-                `;
-
-            } catch (error) {
-                result.textContent =
-                    "Unable to evaluate answer.";
-            }
-        }
-
-        function nextQuestion() {
-
-            if (currentQuestionIndex === questions.length - 1) {
+            if (questions.length === 0) {
 
                 document.getElementById("question").textContent =
-                    "🎉 Interview Completed!";
-
-                document.getElementById("answer").style.display =
-                    "none";
-
-                document.getElementById("submitBtn").style.display =
-                    "none";
-
-                document.getElementById("nextBtn").style.display =
-                    "none";
-
-                document.getElementById("result").innerHTML = `
-                    <div class="feedback-card">
-                        <h3>Great job!</h3>
-                        <p>
-                            You have completed all
-                            ${questions.length}
-                            interview questions.
-                        </p>
-                        <p>
-                            Keep practicing to improve your
-                            confidence and interview skills.
-                        </p>
-                    </div>
-                `;
+                    "No questions available.";
 
                 return;
             }
-
-            currentQuestionIndex++;
 
             showQuestion();
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById("question").textContent =
+                "Unable to load question.";
+        }
+    }
+
+
+    // ==============================
+    // SHOW CURRENT QUESTION
+    // ==============================
+
+    function showQuestion() {
+
+        document.getElementById("question").textContent =
+            questions[currentQuestionIndex];
+
+        document.getElementById("answer").value = "";
+
+        document.getElementById("result").innerHTML = "";
+
+        document.getElementById("answer").style.display = "block";
+
+        document.getElementById("submitBtn").style.display =
+            "inline-block";
+
+        document.getElementById("nextBtn").style.display =
+            "inline-block";
+    }
+
+
+    // ==============================
+    // SUBMIT ANSWER
+    // ==============================
+
+    async function submitAnswer() {
+
+        const answer =
+            document.getElementById("answer").value;
+
+        const result =
+            document.getElementById("result");
+
+
+        if (!answer.trim()) {
+
+            result.textContent =
+                "Please enter your answer.";
+
+            return;
         }
 
-        loadQuestion();
-    </script>
+
+        result.textContent =
+            "Evaluating your answer...";
+
+
+        try {
+
+            const response = await fetch("/evaluate", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    answer: answer
+                })
+
+            });
+
+
+            const data = await response.json();
+
+
+            result.innerHTML = `
+
+                <div class="feedback-card">
+
+                    <div class="score">
+                        Score: ${data.score}/10
+                    </div>
+
+                    <p>
+                        <strong>Feedback:</strong>
+                        ${data.feedback}
+                    </p>
+
+                </div>
+
+            `;
+
+        } catch (error) {
+
+            console.error(error);
+
+            result.textContent =
+                "Unable to evaluate answer.";
+        }
+    }
+
+
+    // ==============================
+    // NEXT QUESTION
+    // ==============================
+
+    function nextQuestion() {
+
+        console.log(
+            "Current question index:",
+            currentQuestionIndex
+        );
+
+        console.log(
+            "Total questions:",
+            questions.length
+        );
+
+
+        // ==========================================
+        // CHECK WHETHER LAST QUESTION IS COMPLETED
+        // ==========================================
+
+        if (
+            currentQuestionIndex >=
+            questions.length - 1
+        ) {
+
+            showCompletedScreen();
+
+            return;
+        }
+
+
+        // ==========================================
+        // MOVE TO NEXT QUESTION
+        // ==========================================
+
+        currentQuestionIndex++;
+
+        showQuestion();
+    }
+
+
+    // ==============================
+    // COMPLETED SCREEN
+    // ==============================
+
+    function showCompletedScreen() {
+
+        document.getElementById("question").innerHTML = `
+            <div class="completed">
+
+                <h2>
+                    🎉 Interview Completed!
+                </h2>
+
+                <p>
+                    Great job! You have completed
+                    all ${questions.length}
+                    interview questions.
+                </p>
+
+                <p>
+                    Keep practicing to improve your
+                    confidence and interview skills.
+                </p>
+
+            </div>
+        `;
+
+
+        // Hide answer box
+
+        document.getElementById("answer").style.display =
+            "none";
+
+
+        // Hide submit button
+
+        document.getElementById("submitBtn").style.display =
+            "none";
+
+
+        // Hide next button
+
+        document.getElementById("nextBtn").style.display =
+            "none";
+
+
+        // Show completion message
+
+        document.getElementById("result").innerHTML = `
+
+            <div class="feedback-card">
+
+                <h3>
+                    ✅ Well Done!
+                </h3>
+
+                <p>
+                    You successfully completed
+                    the interview.
+                </p>
+
+            </div>
+
+        `;
+    }
+
+
+    // ==============================
+    // START APPLICATION
+    // ==============================
+
+    loadQuestion();
+
+</script>
 
 </body>
+
 </html>
+```
