@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Interview Coach</title>
-
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
@@ -24,8 +23,13 @@
                 placeholder="Type your answer here..."
             ></textarea>
 
-            <button onclick="submitAnswer()">Submit Answer</button>
-            <button onclick="nextQuestion()">Next Question</button>
+            <button id="submitBtn" onclick="submitAnswer()">
+                Submit Answer
+            </button>
+
+            <button id="nextBtn" onclick="nextQuestion()">
+                Next Question
+            </button>
 
             <div id="result"></div>
 
@@ -33,7 +37,121 @@
 
     </div>
 
-    <script src="/static/script.js"></script>
+    <script>
+        let questions = [];
+        let currentQuestionIndex = 0;
+
+        async function loadQuestion() {
+            try {
+                const response = await fetch("/questions");
+                const data = await response.json();
+
+                questions = data.questions;
+
+                showQuestion();
+
+            } catch (error) {
+                console.error(error);
+
+                document.getElementById("question").textContent =
+                    "Unable to load question.";
+            }
+        }
+
+        function showQuestion() {
+            document.getElementById("question").textContent =
+                questions[currentQuestionIndex];
+
+            document.getElementById("answer").value = "";
+            document.getElementById("result").innerHTML = "";
+        }
+
+        async function submitAnswer() {
+            const answer =
+                document.getElementById("answer").value;
+
+            const result =
+                document.getElementById("result");
+
+            if (!answer.trim()) {
+                result.textContent = "Please enter your answer.";
+                return;
+            }
+
+            result.textContent = "Evaluating your answer...";
+
+            try {
+                const response = await fetch("/evaluate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        answer: answer
+                    })
+                });
+
+                const data = await response.json();
+
+                result.innerHTML = `
+                    <div class="feedback-card">
+                        <div class="score">
+                            Score: ${data.score}/10
+                        </div>
+                        <p>
+                            <strong>Feedback:</strong>
+                            ${data.feedback}
+                        </p>
+                    </div>
+                `;
+
+            } catch (error) {
+                result.textContent =
+                    "Unable to evaluate answer.";
+            }
+        }
+
+        function nextQuestion() {
+
+            if (currentQuestionIndex === questions.length - 1) {
+
+                document.getElementById("question").textContent =
+                    "🎉 Interview Completed!";
+
+                document.getElementById("answer").style.display =
+                    "none";
+
+                document.getElementById("submitBtn").style.display =
+                    "none";
+
+                document.getElementById("nextBtn").style.display =
+                    "none";
+
+                document.getElementById("result").innerHTML = `
+                    <div class="feedback-card">
+                        <h3>Great job!</h3>
+                        <p>
+                            You have completed all
+                            ${questions.length}
+                            interview questions.
+                        </p>
+                        <p>
+                            Keep practicing to improve your
+                            confidence and interview skills.
+                        </p>
+                    </div>
+                `;
+
+                return;
+            }
+
+            currentQuestionIndex++;
+
+            showQuestion();
+        }
+
+        loadQuestion();
+    </script>
 
 </body>
 </html>
